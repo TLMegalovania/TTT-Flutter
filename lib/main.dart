@@ -1,67 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:signalr_netcore/signalr_client.dart';
+import 'package:ttt/home.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MaterialApp(
+    title: 'Tic Tac Toe',
+    theme: ThemeData(
+      primarySwatch: Colors.blue,
+    ),
+    home: const HomeApp(title: 'Tic Tac Toe'),
+  ));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Tic Tac Toe',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Tic Tac Toe'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class HomeApp extends StatefulWidget {
+  const HomeApp({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<StatefulWidget> createState() => _HomeAppState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+class _HomeAppState extends State<HomeApp> {
+  final HubConnection client = HubConnectionBuilder()
+      .withUrl('url',
+          transportType: HttpTransportType.WebSockets,
+          options: HttpConnectionOptions(skipNegotiation: true))
+      .build();
+  String nickname = '';
+  void setNickname(String nickname) => setState(() => this.nickname = nickname);
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          leading: Image.asset('images/favicon.ico'),
+          title: Text(widget.title),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
+        body: HomePage(setName: setNickname, client: client),
+      );
 }
