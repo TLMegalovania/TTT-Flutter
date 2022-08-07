@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 import 'package:ttt/home.dart';
+import 'package:ttt/type.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -22,6 +23,10 @@ class HomeApp extends StatefulWidget {
 }
 
 class _HomeAppState extends State<HomeApp> {
+  _HomeAppState() {
+    client.on('gotRooms',
+        (args) => setState(() => roomInfos = args![0] as List<RoomInfo>));
+  }
   final HubConnection client = HubConnectionBuilder()
       .withUrl('url',
           transportType: HttpTransportType.WebSockets,
@@ -29,6 +34,7 @@ class _HomeAppState extends State<HomeApp> {
       .build();
   String nickname = '';
   void setNickname(String nickname) => setState(() => this.nickname = nickname);
+  List<RoomInfo> roomInfos = [];
 
   @override
   Widget build(BuildContext context) => Scaffold(
