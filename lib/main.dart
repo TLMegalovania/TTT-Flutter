@@ -42,6 +42,6 @@ class _HomeAppState extends State<HomeApp> {
           leading: Image.asset('images/favicon.ico'),
           title: Text(widget.title),
         ),
-        body: HomePage(setName: setNickname, client: client),
+        body: HomePage(setName: setNickname, client: client, roomInfos: roomInfos,),
       );
 }
