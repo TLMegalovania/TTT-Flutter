@@ -19,7 +19,7 @@ class RoomPage extends StatelessWidget {
   final int id;
   final PlayerType playerType;
   final List<PieceType> board;
-  final PieceType turn;
+  final PlayerType turn;
   final WinType result;
   void startOrJoin() {
     if (playerType != PlayerType.Observer) {

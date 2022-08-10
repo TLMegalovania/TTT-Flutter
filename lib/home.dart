@@ -9,12 +9,24 @@ class HomePage extends StatefulWidget {
       {Key? key,
       required this.setName,
       required this.client,
-      required this.roomInfos})
+      required this.roomInfos,
+      required this.roomDetail,
+      required this.id,
+      required this.playerType,
+      required this.board,
+      required this.turn,
+      required this.result})
       : super(key: key);
 
   final Function(String) setName;
   final HubConnection client;
   final List<RoomInfo> roomInfos;
+  final RoomDetail roomDetail;
+  final int id;
+  final PlayerType playerType;
+  final List<PieceType> board;
+  final PlayerType turn;
+  final WinType result;
 
   @override
   State<StatefulWidget> createState() => _HomeState();
@@ -41,7 +53,16 @@ class _HomeState extends State<HomePage> {
               await Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (_) => HallPage(client: widget.client, roomInfos: widget.roomInfos,)));
+                      builder: (_) => HallPage(
+                            client: widget.client,
+                            roomInfos: widget.roomInfos,
+                            board: widget.board,
+                            id: widget.id,
+                            playerType: widget.playerType,
+                            turn: widget.turn,
+                            result: widget.result,
+                            roomDetail: widget.roomDetail,
+                          )));
             } finally {
               setConnecting(false);
             }

@@ -26,6 +26,26 @@ class _HomeAppState extends State<HomeApp> {
   _HomeAppState() {
     client.on('gotRooms',
         (args) => setState(() => roomInfos = args![0] as List<RoomInfo>));
+    client.on("gotBoard", (list) {
+      var b = list?[0] as BoardInfo;
+      setState(() {
+        board = b.Board;
+        turn = b.Turn == PieceType.Black
+            ? PlayerType.Host
+            : b.Turn == PieceType.White
+                ? PlayerType.Guest
+                : PlayerType.None;
+        result = b.Result;
+      });
+    });
+    client.on("gotRoom", (list) {
+      var detail = list?[0] as RoomDetail;
+      setState(() => roomDetail = detail);
+    });
+    client.on("joinedRoom", (list) {
+      var t = list?[0] as PlayerType;
+      setState(() => playerType = t);
+    });
   }
   final HubConnection client = HubConnectionBuilder()
       .withUrl('url',
@@ -35,6 +55,12 @@ class _HomeAppState extends State<HomeApp> {
   String nickname = '';
   void setNickname(String nickname) => setState(() => this.nickname = nickname);
   List<RoomInfo> roomInfos = [];
+  List<PieceType> board = [];
+  PlayerType turn = PlayerType.None;
+  WinType result = WinType.Null;
+  int id = -1;
+  PlayerType playerType = PlayerType.None;
+  RoomDetail roomDetail = RoomDetail();
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -42,6 +68,16 @@ class _HomeAppState extends State<HomeApp> {
           leading: Image.asset('images/favicon.ico'),
           title: Text(widget.title),
         ),
-        body: HomePage(setName: setNickname, client: client, roomInfos: roomInfos,),
+        body: HomePage(
+          setName: setNickname,
+          client: client,
+          roomInfos: roomInfos,
+          board: board,
+          id: id,
+          playerType: playerType,
+          turn: turn,
+          result: result,
+          roomDetail: roomDetail,
+        ),
       );
 }
